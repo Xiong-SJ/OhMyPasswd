@@ -77,7 +77,7 @@ class PersonInfo:
             return None
 
 
-class ParserFuncsRegitry:
+class ParserFuncsRegistry:
     _instance = None
     _funcs = []
 
@@ -87,7 +87,7 @@ class ParserFuncsRegitry:
         return cls._instance
 
     @classmethod
-    def regitry(cls, func):
+    def registry(cls, func):
         cls._funcs.append(func.__name__)
         return func
 
@@ -99,7 +99,7 @@ class ParserFuncsRegitry:
 解析函数的写法:
 # 函数名不能重复,重复会返回error
 # 参数只能是PersonInfo类
-@ParserFuncsRegitry.regitry
+@ParserFuncsRegistry.registry
 def func(name:PersonInfo) -> dict:
     #处理方法
     #返回值必须是dict类型
@@ -111,13 +111,13 @@ value: 处理后值的列表
 eg:
 处理的是ParsonInfo.name
 {
-    name:['nihao','nihao',...]
+    'name':['nihao','nihao',...]
 }
 """
 # 开始你们的操作吧
 
 
-def parsed_data(data: PersonInfo, parser_funcs_regitry: ParserFuncsRegitry) -> dict|None:
+def parsed_data(data: PersonInfo, parser_funcs_registry: ParserFuncsRegistry) -> dict|None:
     return None
 
 
