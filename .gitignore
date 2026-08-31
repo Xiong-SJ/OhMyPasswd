@@ -8,6 +8,7 @@
 
 !src/*
 !data/*
-!run.py
 !.gitignore
 !README.md
+!run.py
+!requirements.txt
