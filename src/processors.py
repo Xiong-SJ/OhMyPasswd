@@ -8,6 +8,7 @@
 
 # 标准库导入
 import json
+import inspect
 
 # 第三方库导入
 from pypinyin import pinyin, lazy_pinyin, Style
@@ -20,14 +21,14 @@ class PersonInfo:
     def __init__(
         self,
         name: str | None = None,
-        phone_numbers: str | list | None = None,
+        phone_numbers: str | list[str] | None = None,
         identity: str | None = None,
-        birthdate: str | list | None = None,
-        hometowns: str | list | None = None,
-        workplaces: str | list | None = None,
-        educational_institutions: str | list | None = None,
-        accounts: str | list | None = None,
-        passwords: str | list | None = None,
+        birthdate: str | list[str] | None = None,
+        hometowns: str | list[str] | None = None,
+        workplaces: str | list[str] | None = None,
+        educational_institutions: str | list[str] | None = None,
+        accounts: str | list[str] | None = None,
+        passwords: str | list[str] | None = None,
     ):
 
         self.name = name
@@ -88,7 +89,24 @@ class ParserFuncsRegistry:
 
     @classmethod
     def registry(cls, func):
-        cls._funcs.append(func.__name__)
+        if not callable(func):
+            raise TypeError(f"registry 只能接收函数，但你传入的是 {type(func)}")
+
+        if func.__name__ in cls._funcs:
+            raise ValueError(f"函数 '{func.__name__}' 已经被注册过了，请勿重复注册！")
+
+        sig = inspect.signature(func)
+
+        if len(list(sig.parameters.values())) != 1:
+            raise TypeError(f"函数 {func.__name__} 必须只接受一个参数！")
+
+        if (
+            sig.return_annotation is not inspect.Signature.empty
+            and sig.return_annotation != dict
+        ):
+            raise TypeError(f"函数 {func.__name__} 的返回类型必须是 dict!")
+
+        cls._funcs.append(func)
         return func
 
     @classmethod
